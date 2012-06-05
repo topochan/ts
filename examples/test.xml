@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<cluster>
+  <peers>
+    <peer>10.16.157.75</peer>
+    <peer>10.16.157.78</peer>
+    <peer>10.16.157.81</peer>
+    <peer>10.16.157.84</peer>
+  </peers>
+  <volume>
+    <name>nfs-test-5</name>
+    <type>Distribute</type>
+    <count>2</count> <!-- For any other value than type:replica this value is
+                          ignored -->
+    <transport>tcp</transport>
+    <exports>
+      <export> <!-- Each host can have more than one export dir -->
+        <host>10.16.157.75</host>
+        <dir>/mnt/export/1</dir>
+        <dir>/mnt/export/2</dir>
+      </export>
+      <export> <!-- Each host can have more than one export dir -->
+        <host>10.16.157.78</host>
+        <dir>/mnt/export/1</dir>
+        <dir>/mnt/export/2</dir>
+      </export>
+    </exports>
+  </volume>
+</cluster>

@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<cluster version=3.3.0qa38 build=True>
+  <peers>
+    <peer>10.16.157.75</peer>
+    <peer>10.16.157.78</peer>
+    <peer>10.16.157.81</peer>
+    <peer>10.16.157.84</peer>
+  </peers>
+  <volume>
+    <name>nfs-test-5</name>
+    <type>distribute</type> <!-- distribute/replicate/stripe -->
+    <count>2</count> <!-- For any other value than type:replica or -->
+    <!-- type:stripe this value is ignored -->
+    <transport>tcp</transport>
+    <exports>
+      <!-- Each host can have more than one export dir -->
+      <export>
+        <host>10.16.157.75</host>
+        <dir>/mnt/export/1</dir>
+        <dir>/mnt/export/2</dir>
+      </export>
+      <export>
+        <host>10.16.157.78</host>
+        <dir>/mnt/export/1</dir>
+        <dir>/mnt/export/2</dir>
+      </export>
+      <export>
+        <host>10.16.157.81</host>
+        <dir>/mnt/export/1</dir>
+        <dir>/mnt/export/2</dir>
+      </export>
+      <export>
+        <host>10.16.157.84</host>
+        <dir>/mnt/export/1</dir>
+        <dir>/mnt/export/2</dir>
+      </export>
+    </exports>
+  </volume>
+  <mounts>
+    <client host="10.16.157.24">
+      <protocol>nfs</protocol> <!-- nfs/fuse -->
+      <dir>/mnt/nfs</dir>
+      <dir>/mnt/nfs-1</dir>
+    </client>
+    <client host="10.16.157.78">
+      <protocol>fuse</protocol>
+      <dir>/mnt/fuse</dir>
+      <dir>/mnt/fuse-1</dir>
+    </client>
+  </mounts>
+</cluster>
