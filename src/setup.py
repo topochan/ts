@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # Create a gluster setup by parsing the given configuration file
 # This program is run as `fab -f setup.py function_name'
+# For example `fab -f setup.py deploy'
 
 from __future__ import with_statement
 import sys
@@ -75,24 +76,24 @@ def __install():
                 print "Compilation and installation of GlusterFS failed, \
 exiting..."
     # Clean up the build directory
-    cleanup()
+    __cleanup()
 
 # Volume creation need not happen on all the nodes do it on first
 @hosts(peers[0])
 def create_volume():
-    volstring = "%s/%s/sbin/gluster volume create"%\
-        (installbase,cluster['version'])
+    volstring = "%s/sbin/gluster volume create"%installbase
     count = volume['count']
     volname = volume['name']
     transport = volume['transport']
     # For a volume type replicated distribute just mention the count
     voltype = volume['type']
-    if count is None or count == 0 or count == 1:
+    if voltype == "distribute":
         volstring = "%s %s "%(volstring,volname)
     else:
         volstring = "%s %s replica %s transport %s "%\
             (volstring,volname,count,transport)
     # Create the export list
+    print volstring
     exports = volume['exports']
     for export in exports:
         host = export['host']
@@ -104,34 +105,36 @@ def create_volume():
 
 @hosts(peers[0])
 def start_volume(volumename=volumename):
-    run("%s/%s/sbin/gluster volume start %s --mode=script"%\
-            (installbase,cluster['version'],volumename))
+    """Start a given volume VOLUMENAME."""
+    run("%s/sbin/gluster volume start %s --mode=script"%\
+            (installbase,volumename))
 
 @hosts(peers[0])
 def stop_volume(volumename=volumename):
-    run("%s/%s/sbin/gluster volume stop %s --mode=script"%\
-            (installbase,cluster['version'],volumename))
+    """Stop a given volume VOLUMENAME."""
+    run("%s/sbin/gluster volume stop %s --mode=script"%\
+            (installbase,volumename))
 
 @hosts(peers[0])
 def list_volumes(volumename=None):
+    """List all the volumes in the cluster."""
     if volumename == None:
-        run("%s/%s/sbin/gluster volume info"% (installbase,cluster['version']))
+        run("%s/sbin/gluster volume info"% installbase)
     else:
-        run("%s/%s/sbin/gluster volume info %s"%\
-                 (installbase,cluster['version'],volumename))
+        run("%s/sbin/gluster volume info %s"%\
+                 (installbase,volumename))
 
 @hosts(peers[0])
 def delete_volume(volumename=volumename):
-    run("%s/%s/sbin/gluster volume delete %s --mode=script"%
-            (installbase,cluster['version'],volumename))
+    run("%s/sbin/gluster volume delete %s --mode=script"%
+            (installbase,volumename))
 
 @parallel
 def start_glusterd():
     # Start gluster daemon on all the servers
     with settings(warn_only = True):
         if run("pgrep glusterd").failed:
-            if run("%s/%s/sbin/glusterd"%(installbase, cluster['version']))\
-                    .failed:
+            if run("%s/sbin/glusterd"%installbase).failed:
                 print "Unable to start glusterd, exiting..."
                 sys.exit(1)
         else:
@@ -140,14 +143,26 @@ def start_glusterd():
 
 @hosts(peers[0])
 def peer_probe():
+    """Probe all the peers listed in the config file."""
     for peer in peers:
-        if run("%s/%s/sbin/gluster peer probe %s"%\
-                   (installbase, cluster['version'],peer)).failed:
+        if run("%s/sbin/gluster peer probe %s"%\
+                   (installbase,peer)).failed:
             print "Unable to peer probe, exiting..."
             sys.exit(1)
 
+@hosts(peers[0])
+def peer_status():
+    """list all the peers on the node."""
+    if run("%s/sbin/gluster peer status"%\
+               installbase).failed:
+        print "Unable to find peer status, exiting..."
+        sys.exit(1)
+
+
+
 @parallel
 def deploy():
+    """Download, build and deploy GlusterFS."""
     with settings(warn_only = True):
         if run("test -d %s" % src).failed:
             run("mkdir -p %s" %src)
@@ -160,6 +175,6 @@ installation..."
     __install()
 
 @parallel
-def cleanup():
+def __cleanup():
     run("rm -rvf %s/*"% tmp)
     # run("rm -rvf /usr/src/GlusterFS")

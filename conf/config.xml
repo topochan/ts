@@ -1,39 +1,31 @@
 <?xml version="1.0"?>
 <cluster version="3.3.0">
   <peers>
-    <peer>10.16.157.45</peer>
-    <peer>10.16.157.48</peer>
-    <peer>10.16.157.84</peer>
-    <peer>10.16.157.87</peer>
+    <peer>10.16.157.24</peer>
+    <peer>10.16.157.36</peer>
   </peers>
   <volume>
-    <name>nfs-udp-mount</name>
+    <name>scalability-1</name>
     <type>distribute</type> <!-- distribute/replicate/stripe -->
-    <count>2</count> <!-- For any other value than type:replica or -->
+    <count>0</count> <!-- For any other value than type:replica or -->
     <!-- type:stripe this value is ignored -->
     <transport>tcp</transport>
     <exports>
       <!-- Each host can have more than one export dir -->
       <export>
-        <host>10.16.157.45</host>
-        <dir>/home/45-1</dir>
+        <host>10.16.157.24</host>
+        <dir>/home/scalability-1/dir-1</dir>
+        <dir>/home/scalability-1/dir-2</dir>
       </export>
       <export>
-        <host>10.16.157.48</host>
-        <dir>/home/48-1</dir>
-      </export>
-      <export>
-        <host>10.16.157.84</host>
-        <dir>/home/84-1</dir>
-      </export>
-      <export>
-        <host>10.16.157.87</host>
-        <dir>/home/87-1</dir>
+        <host>10.16.157.36</host>
+        <dir>/home/scalability-1/dir-1</dir>
+        <dir>/home/scalability-1/dir-2</dir>
       </export>
     </exports>
   </volume>
   <clients>
-    <client host="10.16.157.24">
+    <client host="10.16.157.12">
       <protocol>fuse</protocol> <!-- nfs/fuse -->
       <mnt>/mnt/fuse</mnt>
     </client>
