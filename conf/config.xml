@@ -27,7 +27,15 @@
   <clients>
     <client host="10.16.157.12">
       <protocol>fuse</protocol> <!-- nfs/fuse -->
-      <mnt>/mnt/fuse</mnt>
+      <mnt>/mnt/fuse-2</mnt>
+      <mnt>/mnt/fuse-3</mnt>
+      <mnt>/mnt/fuse-4</mnt>
+    </client>
+    <client host="10.16.157.15">
+      <protocol>fuse</protocol> <!-- nfs/fuse -->
+      <mnt>/mnt/fuse-2</mnt>
+      <mnt>/mnt/fuse-3</mnt>
+      <mnt>/mnt/fuse-4</mnt>
     </client>
   </clients>
 </cluster>

@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# Mount the clients on the mount points listed in the conf
+# if the mount points do not exist create them
+
 from __future__ import with_statement
 import sys
 from fabric.api import *
@@ -53,6 +56,9 @@ def mount(server=server,options=""):
             mounts = client['mnts']
             for mount in mounts:
                 with settings(warn_only = True):
+                    # Create the mountpoint if it does not exist
+                    if run("test -d %s" % mount).failed:
+                        run("mkdir -p %s" %mount)
                     if run("mount -t %s %s:%s %s %s; :"%\
                                (protocol,server,volumename,mount,options)).\
                                failed:
