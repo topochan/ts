@@ -56,15 +56,21 @@ def __deploy():
             print "Won't mount! qa export not found. Exiting..."
         else:
             if run("mount | grep '/mnt/qa type nfs'").failed:
-                if ("test -d /mnt/qa").failed:
+                if run("test -d /mnt/qa").failed:
                     run("mkdir %s 2>/dev/null"%qa_dir)
-                run("mount -t nfs %s:/qa-tools %s -overs=3"\
+                # run("mount -t nfs %s:/qa-tools %s -overs=3"\
+                #         %(qa_export_server,qa_dir))
+                run("mount -t glusterfs %s:/qa-tools %s"\
                         %(qa_export_server,qa_dir))
+
+def __mount_clients():
+    local("fab -f mount.py mount")
 
 @parallel
 def trun():
     """Run the commands to time them"""
     __deploy()
+    __mount_clients()
     mounts = client['mnts']
     with cd(qa_dir):
         for mount in mounts:
