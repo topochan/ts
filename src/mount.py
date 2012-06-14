@@ -59,6 +59,7 @@ def mount(server=server,options=""):
                     # Create the mountpoint if it does not exist
                     if run("test -d %s" % mount).failed:
                         run("mkdir -p %s" %mount)
+                    # FIXME: Directory exists, but is it already mounted?
                     if run("mount -t %s %s:%s %s %s; :"%\
                                (protocol,server,volumename,mount,options)).\
                                failed:
@@ -68,13 +69,18 @@ def mount(server=server,options=""):
 
 @parallel
 def umount(mountpt=None):
-    for client in clients:
-        mounts = client['mnts']
-        host = client['host']
-        for mount in mounts:
-            if env.host == host:
-                if run("umount -l %s; :"%(mount)).failed:
-                    print "umount failed on %s"%host
+    with settings(warn_only = True):
+        if mountpt is not None or mountpt == "":
+            if run("umount -l %s; :"%(mountpt)).failed:
+                print "umount failed on %s"%host
+        else:
+            for client in clients:
+                mounts = client['mnts']
+                host = client['host']
+                for mount in mounts:
+                    if env.host == host:
+                        if run("umount -l %s; :"%(mount)).failed:
+                            print "umount failed on %s"%host
 
 def list():
     run("mount")
