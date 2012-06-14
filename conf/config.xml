@@ -14,28 +14,32 @@
       <!-- Each host can have more than one export dir -->
       <export>
         <host>10.16.157.24</host>
-        <dir>/home/scalability-1/dir-1</dir>
-        <dir>/home/scalability-1/dir-2</dir>
+        <dir>/home/scalability-2/dir-1</dir>
+        <dir>/home/scalability-2/dir-2</dir>
       </export>
       <export>
         <host>10.16.157.36</host>
-        <dir>/home/scalability-1/dir-1</dir>
-        <dir>/home/scalability-1/dir-2</dir>
+        <dir>/home/scalability-2/dir-1</dir>
+        <dir>/home/scalability-2/dir-2</dir>
       </export>
     </exports>
   </volume>
   <clients>
     <client host="10.16.157.12">
       <protocol>fuse</protocol> <!-- nfs/fuse -->
-      <mnt>/mnt/fuse-2</mnt>
-      <mnt>/mnt/fuse-3</mnt>
-      <mnt>/mnt/fuse-4</mnt>
+      <mnt>/mnt/fuse-0</mnt>
     </client>
     <client host="10.16.157.15">
       <protocol>fuse</protocol> <!-- nfs/fuse -->
-      <mnt>/mnt/fuse-2</mnt>
-      <mnt>/mnt/fuse-3</mnt>
-      <mnt>/mnt/fuse-4</mnt>
+      <mnt>/mnt/fuse-0</mnt>
+    </client>
+    <client host="10.16.157.45">
+      <protocol>fuse</protocol> <!-- nfs/fuse -->
+      <mnt>/mnt/fuse-0</mnt>
+    </client>
+    <client host="10.16.157.48">
+      <protocol>fuse</protocol> <!-- nfs/fuse -->
+      <mnt>/mnt/fuse-0</mnt>
     </client>
   </clients>
 </cluster>
